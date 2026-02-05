@@ -18,8 +18,6 @@ if ($_POST) {
     } elseif (!validarEmail($email)) {
         $error = 'El email no tiene un formato válido';
     } else {
-        // Aquí podrías guardar el mensaje en la base de datos o enviarlo por email
-        // Por ahora solo mostramos un mensaje de éxito
         $mensaje_enviado = true;
     }
 }

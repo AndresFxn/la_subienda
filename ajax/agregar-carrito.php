@@ -5,13 +5,11 @@ require_once '../includes/functions.php';
 
 header('Content-Type: application/json');
 
-// Verificar si está logueado
 if (!isset($_SESSION['usuario_id'])) {
     echo json_encode(['success' => false, 'message' => 'Usuario no autenticado']);
     exit;
 }
 
-// Obtener datos JSON
 $input = json_decode(file_get_contents('php://input'), true);
 $producto_id = $input['producto_id'] ?? null;
 $cantidad = $input['cantidad'] ?? 1;
@@ -21,17 +19,14 @@ if (!$producto_id) {
     exit;
 }
 
-// Verificar que el producto existe
 $producto = obtenerProductoPorId($conn, $producto_id);
 if (!$producto) {
     echo json_encode(['success' => false, 'message' => 'Producto no encontrado']);
     exit;
 }
 
-// Verificar límites del usuario
 $limites = validarLimitesUsuario($conn, $_SESSION['usuario_id']);
 
-// Determinar la categoría del producto
 $stmt = $conn->prepare("SELECT c.nombre FROM categorias c JOIN productos p ON c.id = p.categoria_id WHERE p.id = ?");
 $stmt->execute([$producto_id]);
 $categoria = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -48,7 +43,6 @@ if ($categoria) {
     }
 }
 
-// Agregar al carrito
 if (agregarAlCarrito($conn, $_SESSION['usuario_id'], $producto_id, $cantidad)) {
     $cart_count = obtenerCantidadCarrito($_SESSION['usuario_id']);
     echo json_encode([

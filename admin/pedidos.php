@@ -273,7 +273,6 @@ $ventas_totales = $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body" id="detalle-content">
-                    <!-- El contenido se carga dinámicamente -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>

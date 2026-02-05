@@ -1,8 +1,7 @@
 <?php
-// Funciones generales del sistema
 
 function obtenerProductosDestacados($conn, $limit = 6) {
-    $limit = (int)$limit; // Asegurar que sea un entero
+    $limit = (int)$limit;
     $stmt = $conn->prepare("SELECT * FROM productos WHERE destacado = 1 AND activo = 1 LIMIT " . $limit);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -51,18 +50,15 @@ function autenticarUsuario($conn, $email, $password) {
 }
 
 function agregarAlCarrito($conn, $usuario_id, $producto_id, $cantidad = 1) {
-    // Verificar si el producto ya está en el carrito
     $stmt = $conn->prepare("SELECT * FROM carrito WHERE usuario_id = ? AND producto_id = ?");
     $stmt->execute([$usuario_id, $producto_id]);
     $item = $stmt->fetch(PDO::FETCH_ASSOC);
     
     if ($item) {
-        // Actualizar cantidad
         $nueva_cantidad = $item['cantidad'] + $cantidad;
         $stmt = $conn->prepare("UPDATE carrito SET cantidad = ? WHERE id = ?");
         return $stmt->execute([$nueva_cantidad, $item['id']]);
     } else {
-        // Agregar nuevo item
         $stmt = $conn->prepare("INSERT INTO carrito (usuario_id, producto_id, cantidad) VALUES (?, ?, ?)");
         return $stmt->execute([$usuario_id, $producto_id, $cantidad]);
     }
@@ -122,24 +118,19 @@ function procesarPedido($conn, $usuario_id) {
     try {
         $conn->beginTransaction();
         
-        // Calcular total
         $total = calcularTotalCarrito($conn, $usuario_id);
         
-        // Crear pedido
         $stmt = $conn->prepare("INSERT INTO pedidos (usuario_id, total) VALUES (?, ?)");
         $stmt->execute([$usuario_id, $total]);
         $pedido_id = $conn->lastInsertId();
         
-        // Obtener items del carrito
         $carrito = obtenerCarrito($conn, $usuario_id);
         
-        // Crear detalles del pedido
         foreach ($carrito as $item) {
             $stmt = $conn->prepare("INSERT INTO detalle_pedidos (pedido_id, producto_id, cantidad, precio_unitario) VALUES (?, ?, ?, ?)");
             $stmt->execute([$pedido_id, $item['producto_id'], $item['cantidad'], $item['precio']]);
         }
         
-        // Limpiar carrito
         $stmt = $conn->prepare("DELETE FROM carrito WHERE usuario_id = ?");
         $stmt->execute([$usuario_id]);
         

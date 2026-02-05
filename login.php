@@ -3,7 +3,6 @@ session_start();
 require_once 'config/database.php';
 require_once 'includes/functions.php';
 
-// Redirigir si ya está logueado
 if (isset($_SESSION['usuario_id'])) {
     header('Location: index.php');
     exit;
@@ -26,7 +25,6 @@ if ($_POST) {
             $_SESSION['usuario_email'] = $usuario['email'];
             $_SESSION['usuario_rol'] = $usuario['rol'];
             
-            // Redirigir según el rol
             if ($usuario['rol'] == 'admin') {
                 header('Location: admin/');
             } else {

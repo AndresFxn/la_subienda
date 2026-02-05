@@ -3,7 +3,6 @@ session_start();
 require_once 'config/database.php';
 require_once 'includes/functions.php';
 
-// Verificar si está logueado
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: login.php');
     exit;
@@ -16,7 +15,6 @@ if (!$pedido_id) {
     exit;
 }
 
-// Verificar que el pedido pertenece al usuario
 $stmt = $conn->prepare("SELECT * FROM pedidos WHERE id = ? AND usuario_id = ?");
 $stmt->execute([$pedido_id, $_SESSION['usuario_id']]);
 $pedido = $stmt->fetch(PDO::FETCH_ASSOC);

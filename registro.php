@@ -3,7 +3,6 @@ session_start();
 require_once 'config/database.php';
 require_once 'includes/functions.php';
 
-// Redirigir si ya está logueado
 if (isset($_SESSION['usuario_id'])) {
     header('Location: index.php');
     exit;
@@ -25,7 +24,6 @@ if ($_POST) {
     
     $confirmar_password = $_POST['confirmar_password'];
     
-    // Validaciones
     if (empty($datos['nombre']) || empty($datos['apellido']) || empty($datos['cedula']) || 
         empty($datos['direccion']) || empty($datos['telefono']) || empty($datos['email']) || 
         empty($datos['password'])) {
@@ -41,7 +39,6 @@ if ($_POST) {
     } elseif ($datos['password'] !== $confirmar_password) {
         $error = 'Las contraseñas no coinciden';
     } else {
-        // Verificar si el email o cédula ya existen
         $stmt = $conn->prepare("SELECT id FROM usuarios WHERE email = ? OR cedula = ?");
         $stmt->execute([$datos['email'], $datos['cedula']]);
         

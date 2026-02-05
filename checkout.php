@@ -3,7 +3,6 @@ session_start();
 require_once 'config/database.php';
 require_once 'includes/functions.php';
 
-// Verificar si está logueado
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: login.php');
     exit;
@@ -12,13 +11,11 @@ if (!isset($_SESSION['usuario_id'])) {
 $carrito = obtenerCarrito($conn, $_SESSION['usuario_id']);
 $total = calcularTotalCarrito($conn, $_SESSION['usuario_id']);
 
-// Redirigir si el carrito está vacío
 if (empty($carrito)) {
     header('Location: carrito.php');
     exit;
 }
 
-// Obtener datos del usuario
 $stmt = $conn->prepare("SELECT * FROM usuarios WHERE id = ?");
 $stmt->execute([$_SESSION['usuario_id']]);
 $usuario = $stmt->fetch(PDO::FETCH_ASSOC);

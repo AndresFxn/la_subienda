@@ -23,7 +23,6 @@ $categorias = obtenerCategorias($conn);
     <div class="container py-5">
         <h1 class="text-center text-primary mb-5">Nuestros Productos</h1>
         
-        <!-- Filtros -->
         <div class="row mb-4">
             <div class="col-md-6">
                 <div class="input-group">
@@ -41,7 +40,6 @@ $categorias = obtenerCategorias($conn);
             </div>
         </div>
         
-        <!-- Productos -->
         <div class="row">
             <?php foreach($productos as $producto): ?>
             <div class="col-md-4 mb-4">

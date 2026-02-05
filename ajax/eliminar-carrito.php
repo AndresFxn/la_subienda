@@ -5,7 +5,6 @@ require_once '../includes/functions.php';
 
 header('Content-Type: application/json');
 
-// Verificar si está logueado
 if (!isset($_SESSION['usuario_id'])) {
     echo json_encode(['success' => false, 'message' => 'Usuario no autenticado']);
     exit;
