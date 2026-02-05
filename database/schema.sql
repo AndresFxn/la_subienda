@@ -1,95 +1,193 @@
--- Crear base de datos
-CREATE DATABASE IF NOT EXISTS pasteleria_db;
-USE pasteleria_db;
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 05-02-2026 a las 19:42:01
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
 
--- Tabla de usuarios
-CREATE TABLE usuarios (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    apellido VARCHAR(100) NOT NULL,
-    cedula VARCHAR(20) UNIQUE NOT NULL,
-    direccion TEXT NOT NULL,
-    telefono VARCHAR(20) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    rol ENUM('usuario', 'admin') DEFAULT 'usuario',
-    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
 
--- Tabla de categorías
-CREATE TABLE categorias (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    descripcion TEXT
-);
 
--- Tabla de productos
-CREATE TABLE productos (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(200) NOT NULL,
-    descripcion TEXT,
-    precio DECIMAL(10,2) NOT NULL,
-    imagen VARCHAR(255),
-    categoria_id INT,
-    stock INT DEFAULT 0,
-    destacado BOOLEAN DEFAULT FALSE,
-    activo BOOLEAN DEFAULT TRUE,
-    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (categoria_id) REFERENCES categorias(id)
-);
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
--- Tabla de carrito
-CREATE TABLE carrito (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    usuario_id INT,
-    producto_id INT,
-    cantidad INT DEFAULT 1,
-    fecha_agregado TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
-    FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE CASCADE
-);
+--
+-- Base de datos: `pasteleria_db`
+--
 
--- Tabla de pedidos
-CREATE TABLE pedidos (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    usuario_id INT,
-    total DECIMAL(10,2) NOT NULL,
-    estado ENUM('pendiente', 'procesando', 'completado', 'cancelado') DEFAULT 'pendiente',
-    fecha_pedido TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
-);
+-- --------------------------------------------------------
 
--- Tabla de detalles de pedidos
-CREATE TABLE detalle_pedidos (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    pedido_id INT,
-    producto_id INT,
-    cantidad INT NOT NULL,
-    precio_unitario DECIMAL(10,2) NOT NULL,
-    FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE,
-    FOREIGN KEY (producto_id) REFERENCES productos(id)
-);
+--
+-- Estructura de tabla para la tabla `carrito`
+--
 
--- Insertar usuario administrador por defecto
-INSERT INTO usuarios (nombre, apellido, cedula, direccion, telefono, email, password, rol) 
-VALUES ('Admin', 'Sistema', '00000000', 'Dirección Admin', '0000000000', 'admin@lasubienda.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin');
+CREATE TABLE `carrito` (
+  `id` int(11) NOT NULL,
+  `usuario_id` int(11) DEFAULT NULL,
+  `producto_id` int(11) DEFAULT NULL,
+  `cantidad` int(11) DEFAULT 1,
+  `fecha_agregado` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Insertar categorías
-INSERT INTO categorias (nombre, descripcion) VALUES 
-('Pasteles', 'Pasteles para toda ocasión'),
-('Postres', 'Deliciosos postres individuales'),
-('Cupcakes', 'Pequeños pasteles decorados'),
-('Tortas', 'Tortas para celebraciones especiales');
+-- --------------------------------------------------------
 
--- Insertar productos de ejemplo
-INSERT INTO productos (nombre, descripcion, precio, imagen, categoria_id, stock, destacado) VALUES 
-('Pastel de Chocolate', 'Delicioso pastel de chocolate con crema', 25.99, 'assets/images/pastel-chocolate.jpg', 1, 10, TRUE),
-('Pastel de Vainilla', 'Suave pastel de vainilla con frosting', 22.99, 'assets/images/pastel-vainilla.jpg', 1, 8, TRUE),
-('Pastel Red Velvet', 'Clásico pastel red velvet con cream cheese', 28.99, 'assets/images/pastel-red-velvet.jpg', 1, 6, TRUE),
-('Tiramisu', 'Postre italiano con café y mascarpone', 8.99, 'assets/images/tiramisu.jpg', 2, 15, FALSE),
-('Cheesecake de Fresa', 'Cremoso cheesecake con fresas frescas', 12.99, 'assets/images/cheesecake-fresa.jpg', 2, 12, TRUE),
-('Cupcake de Chocolate', 'Cupcake individual de chocolate', 4.99, 'assets/images/cupcake-chocolate.jpg', 3, 20, FALSE),
-('Cupcake de Vainilla', 'Cupcake individual de vainilla', 4.99, 'assets/images/cupcake-vainilla.jpg', 3, 18, FALSE),
-('Torta de Cumpleaños', 'Torta personalizada para cumpleaños', 45.99, 'assets/images/torta-cumpleanos.jpg', 4, 5, TRUE),
-('Flan de Caramelo', 'Tradicional flan casero', 6.99, 'assets/images/flan.jpg', 2, 10, FALSE),
-('Tres Leches', 'Pastel tres leches tradicional', 18.99, 'assets/images/tres-leches.jpg', 1, 7, FALSE);
+--
+-- Estructura de tabla para la tabla `categorias`
+--
+
+CREATE TABLE `categorias` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `descripcion` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `categorias`
+--
+
+INSERT INTO `categorias` (`id`, `nombre`, `descripcion`) VALUES
+(1, 'Pasteles', 'Pasteles para toda ocasión'),
+(2, 'Postres', 'Deliciosos postres individuales'),
+(3, 'Cupcakes', 'Pequeños pasteles decorados'),
+(4, 'Tortas', 'Tortas para celebraciones especiales');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `detalle_pedidos`
+--
+
+CREATE TABLE `detalle_pedidos` (
+  `id` int(11) NOT NULL,
+  `pedido_id` int(11) DEFAULT NULL,
+  `producto_id` int(11) DEFAULT NULL,
+  `cantidad` int(11) NOT NULL,
+  `precio_unitario` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `detalle_pedidos`
+--
+
+INSERT INTO `detalle_pedidos` (`id`, `pedido_id`, `producto_id`, `cantidad`, `precio_unitario`) VALUES
+(1, 1, 1, 5, 25.99),
+(2, 1, 5, 15, 12.99);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `pedidos`
+--
+
+CREATE TABLE `pedidos` (
+  `id` int(11) NOT NULL,
+  `usuario_id` int(11) DEFAULT NULL,
+  `total` decimal(10,2) NOT NULL,
+  `estado` enum('pendiente','procesando','completado','cancelado') DEFAULT 'pendiente',
+  `fecha_pedido` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `pedidos`
+--
+
+INSERT INTO `pedidos` (`id`, `usuario_id`, `total`, `estado`, `fecha_pedido`) VALUES
+(1, 1, 324.80, 'pendiente', '2026-02-04 22:06:24');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `productos`
+--
+
+CREATE TABLE `productos` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(200) NOT NULL,
+  `descripcion` text DEFAULT NULL,
+  `precio` decimal(10,2) NOT NULL,
+  `imagen` varchar(255) DEFAULT NULL,
+  `categoria_id` int(11) DEFAULT NULL,
+  `stock` int(11) DEFAULT 0,
+  `destacado` tinyint(1) DEFAULT 0,
+  `activo` tinyint(1) DEFAULT 1,
+  `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `productos`
+--
+
+INSERT INTO `productos` (`id`, `nombre`, `descripcion`, `precio`, `imagen`, `categoria_id`, `stock`, `destacado`, `activo`, `fecha_creacion`) VALUES
+(1, 'Pastel de Chocolate', 'Delicioso pastel de chocolate con crema', 25.99, 'assets/images/pastel-chocolate.jpg', 1, 10, 1, 1, '2026-02-04 19:18:09'),
+(2, 'Pastel de Vainilla', 'Suave pastel de vainilla con frosting', 22.99, 'assets/images/pastel-vainilla.jpg', 1, 8, 1, 1, '2026-02-04 19:18:09'),
+(3, 'Pastel de Limon', 'Clásico pastel de limón', 28.99, 'assets/images/pastel-limon.jpg', 1, 6, 1, 1, '2026-02-04 19:18:09'),
+(4, 'Tiramisu', 'Postre italiano con café y mascarpone', 8.99, 'assets/images/tiramisu.jpg', 2, 15, 0, 1, '2026-02-04 19:18:09'),
+(5, 'Cheesecake de Fresa', 'Cremoso cheesecake con fresas frescas', 12.99, 'assets/images/cheescake-fresa.jpg', 2, 12, 1, 1, '2026-02-04 19:18:09'),
+(6, 'Cupcake de Chocolate', 'Cupcake individual de chocolate', 4.99, 'assets/images/cupcake-chocolate.jpg', 3, 20, 0, 1, '2026-02-04 19:18:09'),
+(7, 'Cupcake de Vainilla', 'Cupcake individual de vainilla', 4.99, 'assets/images/cupcake-vainilla.jpg', 3, 18, 0, 1, '2026-02-04 19:18:09'),
+(8, 'Pastel de Cumpleaños', 'Pastel personalizado para cumpleaños', 45.99, 'assets/images/pastel-cumpleanos.jpg', 4, 5, 1, 1, '2026-02-04 19:18:09'),
+(9, 'Flan de Caramelo', 'Tradicional flan casero', 6.99, 'assets/images/flan-caramelo.jpg', 2, 10, 0, 1, '2026-02-04 19:18:09'),
+(10, 'Tres Leches', 'Pastel tres leches tradicional', 18.99, 'assets/images/pastel-leches.jpg', 1, 7, 0, 1, '2026-02-04 19:18:09');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `usuarios`
+--
+
+CREATE TABLE `usuarios` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `apellido` varchar(100) NOT NULL,
+  `cedula` varchar(20) NOT NULL,
+  `direccion` text NOT NULL,
+  `telefono` varchar(20) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `rol` enum('usuario','admin') DEFAULT 'usuario',
+  `fecha_registro` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `usuarios`
+--
+
+INSERT INTO `usuarios` (`id`, `nombre`, `apellido`, `cedula`, `direccion`, `telefono`, `email`, `password`, `rol`, `fecha_registro`) VALUES
+(1, 'Admin', 'Sistema', '00000000', 'Dirección Admin', '0000000000', 'admin@lasubienda.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', '2026-02-04 19:18:09');
+
+--
+-- Índices para tablas volcadas
+--
+
+--
+-- Indices de la tabla `carrito`
+--
+ALTER TABLE `carrito`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `usuario_id` (`usuario_id`),
+  ADD KEY `producto_id` (`producto_id`);
+
+--
+-- Indices de la tabla `categorias`
+--
+ALTER TABLE `categorias`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `detalle_pedidos`
+--
+ALTER TABLE `detalle_pedidos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `pedido_id` (`pedido_id`),
+  ADD KEY `producto_id` (`producto_id`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
