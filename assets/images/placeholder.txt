@@ -1,0 +1,21 @@
+# Carpeta de Imágenes
+
+Esta carpeta contiene las imágenes de los productos de la pastelería.
+
+Para usar la aplicación correctamente, debes agregar las siguientes imágenes:
+
+## Productos de ejemplo:
+- pastel-chocolate.jpg
+- pastel-vainilla.jpg
+- pastel-red-velvet.jpg
+- tiramisu.jpg
+- cheesecake-fresa.jpg
+- cupcake-chocolate.jpg
+- cupcake-vainilla.jpg
+- torta-cumpleanos.jpg
+- flan.jpg
+- tres-leches.jpg
+- hero-cake.jpg (para la página principal)
+
+Puedes usar imágenes de stock o tomar fotos de pasteles reales.
+Las imágenes deben tener un tamaño aproximado de 400x300 píxeles para mejor rendimiento.
